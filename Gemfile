@@ -1,6 +1,6 @@
-source 'http://rubygems.org'
-source 'http://gems.rubyforge.org'
-source 'http://gems.github.com'
+source 'https://rubygems.org'
+#source 'http://gems.rubyforge.org'
+#source 'http://gems.github.com'
 
 gem 'rails', '3.2.13'
 
@@ -20,6 +20,12 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+end
+
+group :development do
+  gem 'capistrano', '~> 3.1.0'
+  gem 'capistrano-bundler', '~> 1.1.2'
+  gem 'capistrano-rails', '~> 1.1.1'
 end
 
 gem 'jquery-rails'
