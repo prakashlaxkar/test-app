@@ -3,7 +3,11 @@ TestApp::Application.configure do
   # config.cms.site_domain = "www.example.com"
 
   # Configure your mail server's address below
-  config.action_mailer.smtp_settings = {:address => 'mail.yourmailserver.com', :domain => config.cms.site_domain}
+  # config.action_mailer.smtp_settings = {:address => 'mail.yourmailserver.com', :domain => config.cms.site_domain}
+
+  config.cms.use_single_domain = true
+  config.cms.attachments.storage_directory = File.join(Rails.root, 'uploads')
+  config.action_view.cache_template_loading = false
 
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -31,7 +35,7 @@ TestApp::Application.configure do
 
   # Specifies the header that your server uses for sending files
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
-  # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
+  config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
@@ -53,6 +57,7 @@ TestApp::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( *.js *.css )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -67,7 +72,18 @@ TestApp::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
+  # config.cache_store = :dalli_store, 'localhost:11211', {:namespace => 'new_idc_', :expires_in => 1.day, :compress => true}
+
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  # ActionMailer::Base.delivery_method = :sendmail
+  # ActionMailer::Base.sendmail_settings = {
+  #     :location       => '/usr/sbin/sendmail',
+  #     :arguments      => '-i -t'
+  # }
+  #
+  # ActionMailer::Base.perform_deliveries = true
+  # ActionMailer::Base.raise_delivery_errors = true
 end
