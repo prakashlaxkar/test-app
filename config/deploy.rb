@@ -3,8 +3,9 @@ require 'bundler/capistrano'
 
 set :application, 'test-app'
 set :repository, 'git@github.com:Animeshjain2405/test-app.git'
-set :deploy_to,  "/ebs/apps/test-app"
-set :applicationdir,  "/ebs/apps/test-app"
+set :deploy_to,  "ebs/apps/test-app"
+set :applicationdir,  "ebs/apps/test-app"
+set :user, "ubuntu"
 
 set :use_sudo, false
 set :scm, :git
@@ -14,12 +15,14 @@ set :precompile_only_if_changed, true
 
 
 # deploy config
-set :deploy_to, applicationdir
+set :deploy_to, "ebs/apps/test-app"
 set :deploy_via, :export
 
 # additional settings
 default_run_options[:pty] = true  # Forgo errors when deploying from windows
 default_run_options[:shell] = '/bin/bash --login'
+
+ssh_options[:keys] = ["/home/animesh/.ssh/ridersfirstinstanceatec2.pem"]
 
 #ssh_options[:keys] = %w(/Path/To/id_rsa)            # If you are using ssh_keys
 #set :chmod755, "app config db lib public vendor script script/* public/disp*"
@@ -45,10 +48,9 @@ after "deploy:update_code", "deploy:copy_configs"
 # end
 
 task :prod do
-  set :domain, "ec2-54-68-12-114.us-west-2.compute.amazonaws.com"
+  set :domain, "ec2-54-148-183-247.us-west-2.compute.amazonaws.com"
   set :repository, "git@github.com:Animeshjain2405/test-app.git"
   set :local_repository, "git@github.com:Animeshjain2405/test-app.git"
-  set :user, "ubuntu"
   set :branch, "master"
   set :scm_verbose, true
   role :web, domain
