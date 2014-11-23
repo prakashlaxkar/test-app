@@ -3,8 +3,8 @@ require 'bundler/capistrano'
 
 set :application, 'test-app'
 set :repository, 'git@github.com:Animeshjain2405/test-app.git'
-set :deploy_to,  "ebs/apps/test-app"
-set :applicationdir,  "ebs/apps/test-app"
+set :deploy_to,  "/ebs/apps/test-app"
+set :applicationdir,  "/ebs/apps/test-app"
 set :user, "ubuntu"
 
 set :use_sudo, false
@@ -15,50 +15,27 @@ set :precompile_only_if_changed, true
 
 
 # deploy config
-set :deploy_to, "ebs/apps/test-app"
+set :deploy_to, "/ebs/apps/test-app"
 set :deploy_via, :export
 
 # additional settings
 default_run_options[:pty] = true  # Forgo errors when deploying from windows
 default_run_options[:shell] = '/bin/bash --login'
 
-ssh_options[:keys] = ["/home/animesh/.ssh/ridersfirstinstanceatec2.pem"]
+# ssh_options[:keys] = ["/home/animesh/.ssh/animesh.pem"]
 
-#ssh_options[:keys] = %w(/Path/To/id_rsa)            # If you are using ssh_keys
-#set :chmod755, "app config db lib public vendor script script/* public/disp*"
-#set :use_sudo, true
+ssh_options[:keys] = %w(/Path/To/id_rsa)            # If you are using ssh_keys
 
 after "deploy:update_code", "deploy:copy_configs"
 
-# task :qa do
-#   set :domain, "ec2-54-68-12-114.us-west-2.compute.amazonaws.com"
-#   set :user, "ubuntu"
-#   set :branch, "master"
-#   set :scm_verbose, true
-#   role :web, domain
-#   role :app, domain
-#   role :db, domain, :primary=>true
-#   set :deploy_env, "qa"
-#   # set :sphinx_pid, "/ebs/sphinx/idc/log/searchd.pid"
-#   # set :do_reindex, true
-#   # deploy config
-#
-#   "deploy"
-#
-# end
-
 task :prod do
-  set :domain, "ec2-54-148-183-247.us-west-2.compute.amazonaws.com"
+  set :domain, "test.educationamust.com"
   set :repository, "git@github.com:Animeshjain2405/test-app.git"
   set :local_repository, "git@github.com:Animeshjain2405/test-app.git"
   set :branch, "master"
   set :scm_verbose, true
-  role :web, domain
-  role :app, domain
-  role :db, domain, :primary=>true
+  server "test.educationamust.com", :app, :web, :db, :primary => true
   set :deploy_env, "prod"
-  # set :sphinx_pid, "/ebs/sphinx/idc/log/searchd.pid"
-  # set :do_reindex, false
   # deploy config
 
   "deploy"
@@ -69,15 +46,12 @@ namespace :deploy do
 
   task :copy_configs, :roles => :app do
     run "cp #{release_path}/../../shared/database.yml #{release_path}/config/database.yml"
-    run "cp #{release_path}/config/initializers/global.rb.#{deploy_env} #{release_path}/config/initializers/global.rb"
+    # run "cp #{release_path}/config/initializers/global.rb.#{deploy_env} #{release_path}/config/initializers/global.rb"
     run "cp #{release_path}/config/environment.rb.#{deploy_env} #{release_path}/config/environment.rb"
-    run "cp #{release_path}/config/sphinx.yml.#{deploy_env} #{release_path}/config/sphinx.yml"
-    run "cp #{release_path}/public/robots.txt.#{deploy_env} #{release_path}/public/robots.txt"
+    # run "cp #{release_path}/config/sphinx.yml.#{deploy_env} #{release_path}/config/sphinx.yml"
+    # run "cp #{release_path}/public/robots.txt.#{deploy_env} #{release_path}/public/robots.txt"
   end
 
-  # task :reindex do
-  #   run "/bin/chmod a+rwx #{sphinx_pid}"
-  # end
   task :migrate, :roles => :app do
     run "cd #{release_path} && bundle exec rake db:migrate"
   end
@@ -87,10 +61,6 @@ namespace :deploy do
   end
 
   task :restart, :roles => :app, :except => { :no_release => true } do
-
-    # if do_reindex
-    #   reindex
-    # end
 
     run "#{try_sudo} touch #{File.join(current_path, 'tmp', 'restart.txt')}"
     # if deploy_env=="qa"
