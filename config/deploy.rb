@@ -29,12 +29,12 @@ ssh_options[:keys] = %w(/Path/To/id_rsa)            # If you are using ssh_keys
 after "deploy:update_code", "deploy:copy_configs"
 
 task :prod do
-  set :domain, "test.educationamust.com"
+  set :domain, "54.169.2.142"
   set :repository, "git@github.com:Animeshjain2405/test-app.git"
   set :local_repository, "git@github.com:Animeshjain2405/test-app.git"
   set :branch, "master"
   set :scm_verbose, true
-  server "test.educationamust.com", :app, :web, :db, :primary => true
+  server "54.169.2.142", :app, :web, :db, :primary => true
   set :deploy_env, "prod"
   # deploy config
 
